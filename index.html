@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0B">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:;">
+<title>Giver Quest · มาสคอตเดโม</title>
+<style>
+  :root{--bg:#0B0B0B;--bg2:#14160F;--card:#1C1F16;--lime:#C6F432;--gold:#FFD84D;--gold2:#F2B705;--burg:#720F23;--pink:#FF8AC2;--ink:#F7F7F2;--muted:#C5C9BE}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{background:radial-gradient(circle at 50% 30%,#1F2A0E 0,var(--bg) 60%);color:var(--ink);
+    font-family:"Sarabun","Noto Sans Thai","Thonburi","Leelawadee UI","Tahoma",system-ui,sans-serif;
+    display:flex;flex-direction:column;align-items:center;min-height:100%;padding:max(16px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom))}
+  h1{font-size:clamp(22px,6vw,30px);margin:6px 0 2px;color:var(--lime);letter-spacing:0;text-align:center}
+  .sub{color:var(--muted);font-size:16px;margin:0 0 6px;text-align:center;line-height:1.6}
+  .stage{position:relative;width:min(78vw,360px);aspect-ratio:1;margin:8px 0 4px}
+  .tile{position:absolute;inset:0;border-radius:22%;background:var(--lime);box-shadow:0 0 0 0 rgba(198,244,50,0);transition:box-shadow .4s}
+  .tile.glow{box-shadow:0 0 40px 10px rgba(198,244,50,.55),0 0 90px 30px rgba(255,216,77,.25)}
+  #mascot{position:absolute;inset:6%;width:88%;height:88%;cursor:pointer;touch-action:manipulation;overflow:visible}
+  #body{transform-origin:256px 330px;animation:bob 2.6s ease-in-out infinite}
+  .eye{transform-box:fill-box;transform-origin:center;transition:transform .08s}
+  .blink .eye{transform:scaleY(.08)}
+  #plume{transform-box:fill-box;transform-origin:50% 100%;animation:sway 2.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+  .wiggle #wrap{animation:wiggle .55s ease-in-out}
+  @keyframes wiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-9deg)}40%{transform:rotate(8deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}}
+  .jump #wrap{animation:jump .8s cubic-bezier(.3,.7,.4,1)}
+  @keyframes jump{0%{transform:translateY(0) scale(1,1)}15%{transform:translateY(8px) scale(1.08,.9)}45%{transform:translateY(-70px) scale(.95,1.06)}75%{transform:translateY(0) scale(1.06,.94)}100%{transform:translateY(0) scale(1,1)}}
+  .spin{animation:spin 1s cubic-bezier(.5,0,.3,1)}
+  @keyframes spin{0%{transform:rotateY(0) scale(1)}50%{transform:rotateY(180deg) scale(1.12)}100%{transform:rotateY(360deg) scale(1)}}
+  .pop #wrap{animation:pop .7s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes pop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+  #wrap{transform-origin:256px 300px;transform-box:view-box}
+  .sleepy .eye{animation:sleepy 1.6s ease-in-out infinite}
+  @keyframes sleepy{0%,100%{transform:scaleY(1)}40%,70%{transform:scaleY(.12)}}
+  .sleepy #body{animation-duration:4s}
+  .fx{position:absolute;inset:0;pointer-events:none;overflow:visible}
+  .spark{position:absolute;font-size:28px;line-height:1;animation:fly 1s ease-out forwards}
+  @keyframes fly{0%{transform:translate(0,0) scale(.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.2) rotate(180deg);opacity:0}}
+  .dots{position:absolute;left:0;right:0;bottom:-6%;text-align:center;font-size:22px;color:var(--lime);opacity:0;transition:opacity .3s}
+  .sleepy-on .dots{opacity:1}
+  .dots span{display:inline-block;animation:dot 1.2s infinite}
+  .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+  @keyframes dot{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-6px);opacity:1}}
+  .status{min-height:30px;font-size:19px;font-weight:700;color:var(--gold);margin:12px 0 6px;text-align:center}
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:min(100%,420px)}
+  button{font:inherit;font-size:18px;font-weight:700;min-height:56px;border-radius:16px;border:2px solid #2A2F20;background:var(--card);color:var(--ink);cursor:pointer;padding:8px 10px}
+  button:active{transform:scale(.97)}
+  button.primary{background:var(--lime);color:#0B0B0B;border-color:var(--lime)}
+  button.on{border-color:var(--gold);color:var(--gold)}
+  .row{display:flex;gap:12px;width:min(100%,420px);margin-top:12px}
+  .row button{flex:1;font-size:16px;min-height:48px}
+  .note{color:var(--muted);font-size:14px;margin-top:14px;text-align:center;line-height:1.6;max-width:420px}
+  @media (prefers-reduced-motion: reduce){
+    #body,#plume,.dots span{animation:none!important}
+    .wiggle #wrap,.jump #wrap,.spin,.pop #wrap{animation:none!important}
+    .spark{animation:fade .8s forwards!important}
+    @keyframes fade{from{opacity:1}to{opacity:0}}
+  }
+</style>
+</head>
+<body>
+  <h1>Giver Quest · มาสคอตอัศวินตาโต</h1>
+  <p class="sub">แตะที่ตัวมาสคอตได้เลย หรือกดปุ่มด้านล่าง</p>
+
+  <div class="stage" id="stage">
+    <div class="tile" id="tile"></div>
+    <svg id="mascot" viewBox="0 0 512 512" role="img" aria-label="มาสคอตหมวกอัศวินตาโต แตะเพื่อเล่น">
+      <g id="wrap"><g id="body">
+        <!-- plume -->
+        <path id="plume" d="M232 118 C214 88 222 60 246 40 C244 62 256 70 264 58 C272 44 268 30 262 20 C292 34 306 64 300 90 C312 82 318 70 318 60 C334 84 326 110 304 124 Z" fill="#8E1A3C"/>
+        <!-- side plates -->
+        <rect x="70" y="300" width="52" height="84" rx="12" fill="#E6A817" stroke="#0B0B0B" stroke-width="6" transform="rotate(-12 96 342)"/>
+        <rect x="390" y="300" width="52" height="84" rx="12" fill="#E6A817" stroke="#0B0B0B" stroke-width="6" transform="rotate(12 416 342)"/>
+        <!-- helmet -->
+        <circle cx="256" cy="290" r="176" fill="#F2B705"/>
+        <circle cx="256" cy="290" r="164" fill="#1C1F16"/>
+        <path d="M120 230 A150 150 0 0 1 300 132" stroke="#2C3024" stroke-width="18" fill="none" stroke-linecap="round" opacity=".8"/>
+        <!-- visor -->
+        <rect x="126" y="212" width="260" height="146" rx="62" fill="#FFD84D"/>
+        <rect x="138" y="224" width="236" height="122" rx="54" fill="#0E0F0B"/>
+        <!-- eyes -->
+        <g class="eye" id="eyeL">
+          <circle cx="206" cy="278" r="36" fill="#fff"/>
+          <circle cx="210" cy="282" r="25" fill="#0B0B0B"/>
+          <path d="M206 262 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4z" fill="#FFD84D"/>
+          <circle cx="222" cy="294" r="6" fill="#fff"/>
+        </g>
+        <g class="eye" id="eyeR">
+          <circle cx="306" cy="278" r="36" fill="#fff"/>
+          <circle cx="302" cy="282" r="25" fill="#0B0B0B"/>
+          <path d="M302 262 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4z" fill="#FFD84D"/>
+          <circle cx="314" cy="294" r="6" fill="#fff"/>
+        </g>
+        <!-- blush + smile -->
+        <ellipse cx="168" cy="322" rx="20" ry="11" fill="#FF8AC2" opacity=".9"/>
+        <ellipse cx="344" cy="322" rx="20" ry="11" fill="#FF8AC2" opacity=".9"/>
+        <path id="mouth" d="M240 326 Q256 340 272 326" stroke="#C5C9BE" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <!-- grille -->
+        <rect x="216" y="396" width="80" height="38" rx="19" fill="#FFD84D"/>
+        <rect x="226" y="405" width="26" height="20" rx="8" fill="#1C1F16"/>
+        <rect x="260" y="405" width="26" height="20" rx="8" fill="#1C1F16"/>
+      </g></g>
+    </svg>
+    <div class="fx" id="fx"></div>
+    <div class="dots" aria-hidden="true"><span>●</span> <span>●</span> <span>●</span></div>
+  </div>
+
+  <div class="status" id="status" aria-live="polite">สวัสดีครับ พร้อมลุยภารกิจ!</div>
+
+  <div class="btns">
+    <button class="primary" id="bOpen">📲 เปิดแอป</button>
+    <button id="bPlan">✅ ส่งแผนสำเร็จ</button>
+    <button id="bLevel">⭐ เลเวลอัป</button>
+    <button id="bLoad">⏳ กำลังโหลด</button>
+  </div>
+  <div class="row">
+    <button id="bSound" class="on" aria-pressed="true">🔊 เสียง: เปิด</button>
+    <button id="bStop">⏹ หยุด</button>
+  </div>
+  <p class="note">เดโมนี้ทำไว้ให้ดูท่าทางของมาสคอตเท่านั้น ไม่ได้เชื่อมกับเกมจริง และไม่เก็บข้อมูลใด ๆ<br>มาสคอตเป็นฉบับร่าง รอทีมการตลาดสรุป</p>
+
+<script>
+(() => {
+  const svg = document.getElementById('mascot'), stage = document.getElementById('stage'),
+        tile = document.getElementById('tile'), fx = document.getElementById('fx'),
+        status = document.getElementById('status'), mouth = document.getElementById('mouth');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let soundOn = true, actx = null, sleepy = false;
+
+  // ---------- sound (WebAudio, no files) ----------
+  function ctx(){ if(!actx){ const C = window.AudioContext || window.webkitAudioContext; if(C) actx = new C(); } if(actx && actx.state==='suspended') actx.resume(); return actx; }
+  function tone(freq, start, dur, type='sine', vol=.18, slideTo){
+    const a = ctx(); if(!a || !soundOn) return;
+    const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + start;
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + .02);
+  }
+  const sfx = {
+    click(){ tone(1200,0,.06,'square',.08,600); },
+    pop(){ tone(300,0,.18,'sine',.2,900); tone(900,.12,.12,'triangle',.12,1400); },
+    cheer(){ [523,659,784,1047].forEach((f,i)=>tone(f,i*.09,.22,'triangle',.16)); tone(1568,.4,.3,'sine',.1); },
+    level(){ [392,523,659,784,1047,1319].forEach((f,i)=>tone(f,i*.07,.18,'square',.07)); tone(1047,.5,.5,'triangle',.14,2093); },
+    yawn(){ tone(500,0,.7,'sine',.08,220); }
+  };
+
+  // ---------- helpers ----------
+  function play(cls, ms){ svg.classList.remove(cls); void svg.getBoundingClientRect(); svg.classList.add(cls); setTimeout(()=>svg.classList.remove(cls), ms); }
+  function blink(){ if(sleepy) return; svg.classList.add('blink'); setTimeout(()=>svg.classList.remove('blink'), 140); }
+  function smile(big){ mouth.setAttribute('d', big ? 'M232 322 Q256 352 280 322 Z' : 'M240 326 Q256 340 272 326'); mouth.setAttribute('fill', big ? '#FF8AC2' : 'none'); }
+  function sparks(chars, n){
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span'); s.className='spark';
+      s.textContent = chars[i % chars.length];
+      const ang = Math.random()*Math.PI*2, dist = 110 + Math.random()*90;
+      s.style.left = (45 + Math.random()*10) + '%'; s.style.top = (40 + Math.random()*10) + '%';
+      s.style.setProperty('--dx', Math.cos(ang)*dist + 'px'); s.style.setProperty('--dy', Math.sin(ang)*dist - 40 + 'px');
+      s.style.color = ['#FFD84D','#C6F432','#FF8AC2','#F7F7F2'][i%4];
+      s.style.animationDelay = (i*25) + 'ms';
+      fx.appendChild(s); setTimeout(()=>s.remove(), 1400);
+    }
+  }
+  function say(t){ status.textContent = t; }
+  function stopSleepy(){ sleepy=false; svg.classList.remove('sleepy'); stage.classList.remove('sleepy-on'); }
+
+  // ---------- auto blink ----------
+  (function loop(){ setTimeout(()=>{ blink(); if(Math.random()<.25) setTimeout(blink,220); loop(); }, 2200 + Math.random()*2600); })();
+
+  // ---------- interactions ----------
+  svg.addEventListener('click', ()=>{ stopSleepy(); blink(); play('wiggle', 600); sfx.click(); say('ดุ๊กดิ๊ก ๆ 😄'); });
+  document.getElementById('bOpen').onclick = ()=>{ stopSleepy(); smile(false); play('pop', 750); sfx.pop(); setTimeout(blink, 650); say('ยินดีต้อนรับสู่ The Giver Quest!'); };
+  document.getElementById('bPlan').onclick = ()=>{ stopSleepy(); smile(true); play('jump', 850); sfx.cheer(); sparks(['✦','★','✧','✨'], 14); say('ส่งแผนสำเร็จ เก่งมาก! 🎉'); setTimeout(()=>smile(false), 1600); };
+  document.getElementById('bLevel').onclick = ()=>{ stopSleepy(); smile(true); play('spin', 1050); tile.classList.add('glow'); sfx.level(); sparks(['★','⭐','✦'], 18); say('เลเวลอัป! ⭐'); setTimeout(()=>{ tile.classList.remove('glow'); smile(false); }, 1800); };
+  document.getElementById('bLoad').onclick = ()=>{ if(sleepy){ stopSleepy(); say('ตื่นแล้ว พร้อมลุย!'); return; } sleepy=true; svg.classList.add('sleepy'); stage.classList.add('sleepy-on'); sfx.yawn(); say('กำลังโหลด… (กดอีกครั้งเพื่อปลุก)'); };
+  document.getElementById('bStop').onclick = ()=>{ stopSleepy(); smile(false); tile.classList.remove('glow'); say('สวัสดีครับ พร้อมลุยภารกิจ!'); };
+  const bS = document.getElementById('bSound');
+  bS.onclick = ()=>{ soundOn=!soundOn; bS.textContent = soundOn ? '🔊 เสียง: เปิด' : '🔇 เสียง: ปิด'; bS.classList.toggle('on', soundOn); bS.setAttribute('aria-pressed', soundOn); if(soundOn) sfx.click(); };
+
+  // splash pop on load
+  if(!reduce) play('pop', 750);
+})();
+</script>
+</body>
+</html>
